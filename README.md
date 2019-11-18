@@ -1,7 +1,7 @@
 [PyTorch] GANomaly
 =====
 
-Implementation of GANomaly with MNIST dataset [<a href="https://github.com/YeongHyeon/GANomaly">Related TensorFlow Version</a>].
+Implementation of GANomaly with MNIST dataset [<a href="https://github.com/YeongHyeon/GANomaly">TensorFlow Version</a>].
 
 ## Architecture
 <div align="center">
