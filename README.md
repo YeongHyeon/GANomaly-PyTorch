@@ -1,7 +1,7 @@
-GANomaly
+[PyTorch] GANomaly
 =====
 
-Implementation of GANomaly with MNIST dataset [<a href="https://github.com/YeongHyeon/CVAE-AnomalyDetection">Related repository</a>].
+Implementation of GANomaly with MNIST dataset [<a href="https://github.com/YeongHyeon/GANomaly">Related TensorFlow Version</a>].
 
 ## Architecture
 <div align="center">
@@ -34,7 +34,7 @@ Implementation of GANomaly with MNIST dataset [<a href="https://github.com/Yeong
 
 ## Environment
 * Python 3.7.4  
-* Tensorflow 1.14.0  
+* PyTorch 1.1.0  
 * Numpy 1.17.1  
 * Matplotlib 3.1.1  
 * Scikit Learn (sklearn) 0.21.3  
