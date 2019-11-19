@@ -53,28 +53,36 @@ class Encoder(nn.Module):
 
         self.en_conv = nn.Sequential(
             nn.Conv2d(in_channels=self.channel, out_channels=16, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.Conv2d(in_channels=16, out_channels=16, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.MaxPool2d(2),
 
             nn.Conv2d(in_channels=16, out_channels=32, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(32),
             nn.ELU(),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(32),
             nn.ELU(),
             nn.MaxPool2d(2),
 
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
         )
 
         self.en_dense = nn.Sequential(
             Flatten(),
             nn.Linear((self.height//(2**2))*(self.width//(2**2))*self.channel*64, 512),
+            nn.BatchNorm1d(512),
             nn.ELU(),
             nn.Linear(512, self.z_dim),
+            nn.BatchNorm1d(self.z_dim),
         )
 
     def forward(self, input):
@@ -94,27 +102,36 @@ class Decoder(nn.Module):
 
         self.de_dense = nn.Sequential(
             nn.Linear(self.z_dim, 512),
+            nn.BatchNorm1d(512),
             nn.ELU(),
             nn.Linear(512, (self.height//(2**2))*(self.width//(2**2))*self.channel*64),
+            nn.BatchNorm1d((self.height//(2**2))*(self.width//(2**2))*self.channel*64),
             nn.ELU(),
         )
 
         self.de_conv = nn.Sequential(
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
 
             nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=self.ksize+1, stride=2, padding=1),
+            nn.BatchNorm2d(32),
             nn.ELU(),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(32),
             nn.ELU(),
 
             nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=self.ksize+1, stride=2, padding=1),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.Conv2d(in_channels=16, out_channels=16, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.Conv2d(in_channels=16, out_channels=self.channel, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(self.channel),
             nn.Sigmoid(),
         )
 
@@ -136,28 +153,36 @@ class Discriminator(nn.Module):
 
         self.dis_conv = nn.ModuleList([
             nn.Conv2d(in_channels=self.channel, out_channels=16, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.Conv2d(in_channels=16, out_channels=16, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(16),
             nn.ELU(),
             nn.MaxPool2d(2),
 
             nn.Conv2d(in_channels=16, out_channels=32, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(32),
             nn.ELU(),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(32),
             nn.ELU(),
             nn.MaxPool2d(2),
 
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
+            nn.BatchNorm2d(64),
             nn.ELU(),
         ])
 
         self.dis_dense = nn.ModuleList([
             Flatten(),
             nn.Linear((self.height//(2**2))*(self.width//(2**2))*self.channel*64, 512),
+            nn.BatchNorm1d(512),
             nn.ELU(),
             nn.Linear(512, 1),
+            nn.BatchNorm1d(1),
         ])
 
     def forward(self, input):
