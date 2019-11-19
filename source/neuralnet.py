@@ -33,10 +33,12 @@ class NeuralNet(object):
             print(model)
         print("The number of parameters: %d" %(self.num_params))
 
-        self.params = \
-            list(self.encoder.parameters()) + \
-            list(self.decoder.parameters()) + \
-            list(self.discriminator.parameters())
+        self.params = None
+        for idx_m, model in enumerate(self.models):
+            if(self.params is None):
+                self.params = list(model.parameters())
+            else:
+                self.params = self.params + list(model.parameters())
         self.optimizer = optim.Adam(self.params, lr=self.learning_rate)
 
 class Flatten(nn.Module):
@@ -132,7 +134,6 @@ class Decoder(nn.Module):
             nn.ELU(),
             nn.Conv2d(in_channels=16, out_channels=self.channel, kernel_size=self.ksize, stride=1, padding=self.ksize//2),
             nn.BatchNorm2d(self.channel),
-            nn.Sigmoid(),
         )
 
     def forward(self, input):
@@ -140,6 +141,7 @@ class Decoder(nn.Module):
         denseout = self.de_dense(input)
         denseout_res = denseout.view(denseout.size(0), 64, (self.height//(2**2)), (self.height//(2**2)))
         x_hat = self.de_conv(denseout_res)
+        x_hat = torch.clamp(x_hat, min=1e-12, max=1-(1e-12))
 
         return x_hat
 
