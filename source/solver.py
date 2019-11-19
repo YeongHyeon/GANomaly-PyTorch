@@ -255,7 +255,7 @@ def test(neuralnet, dataset):
         dis_x_hat, features_fake = neuralnet.discriminator(x_hat.to(neuralnet.device))
 
         l_tot, l_enc, l_con, l_adv = \
-            lfs.loss_ganomaly(z_code, z_code_hat, x, x_hat, \
+            lfs.loss_ganomaly(z_code, z_code_hat, x_te_torch, x_hat, \
             dis_x, dis_x_hat, features_real, features_fake)
         score_anomaly = l_con.item()
 
@@ -278,7 +278,7 @@ def test(neuralnet, dataset):
     fcsv = open("test-summary.csv", "w")
     fcsv.write("class, loss, outlier\n")
     testnum = 0
-    z_enc_tot, y_te_tot = None, None
+    z_code_tot, y_te_tot = None, None
     loss4box = [[], [], [], [], [], [], [], [], [], []]
     while(True):
         x_te, x_te_torch, y_te, y_te_torch, terminator = dataset.next_test(1) # y_te does not used in this prj.
@@ -291,20 +291,20 @@ def test(neuralnet, dataset):
         dis_x_hat, features_fake = neuralnet.discriminator(x_hat.to(neuralnet.device))
 
         l_tot, l_enc, l_con, l_adv = \
-            lfs.loss_ganomaly(z_code, z_code_hat, x, x_hat, \
+            lfs.loss_ganomaly(z_code, z_code_hat, x_te_torch, x_hat, \
             dis_x, dis_x_hat, features_real, features_fake)
         score_anomaly = l_con.item()
 
-        z_enc = torch2npy(z_enc)
+        z_code = torch2npy(z_code)
         x_hat = np.transpose(torch2npy(x_hat), (0, 2, 3, 1))
 
         loss4box[y_te[0]].append(score_anomaly)
 
-        if(z_enc_tot is None):
-            z_enc_tot = z_enc
+        if(z_code_tot is None):
+            z_code_tot = z_code
             y_te_tot = y_te
         else:
-            z_enc_tot = np.append(z_enc_tot, z_enc, axis=0)
+            z_code_tot = np.append(z_code_tot, z_code, axis=0)
             y_te_tot = np.append(y_te_tot, y_te, axis=0)
 
         outcheck = score_anomaly > outbound
@@ -327,10 +327,10 @@ def test(neuralnet, dataset):
     boxplot(contents=loss4box, savename="test-box.png")
 
     if(neuralnet.z_dim == 2):
-        latent_plot(latent=z_enc_tot, y=y_te_tot, n=dataset.num_class, \
+        latent_plot(latent=z_code_tot, y=y_te_tot, n=dataset.num_class, \
             savename=os.path.join("test-latent.png"))
     else:
         pca = PCA(n_components=2)
-        pca_features = pca.fit_transform(z_enc_tot)
+        pca_features = pca.fit_transform(z_code_tot)
         latent_plot(latent=pca_features, y=y_te_tot, n=dataset.num_class, \
             savename=os.path.join("test-latent.png"))
