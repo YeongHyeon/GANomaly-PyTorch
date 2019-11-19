@@ -185,6 +185,7 @@ class Discriminator(nn.Module):
             nn.ELU(),
             nn.Linear(512, 1),
             nn.BatchNorm1d(1),
+            nn.Sigmoid(),
         ])
 
     def forward(self, input):
