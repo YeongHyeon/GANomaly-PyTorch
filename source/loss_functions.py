@@ -52,24 +52,3 @@ def loss_ganomaly(z_code, z_code_hat, x, x_hat, \
     l_adv = torch.mean(l_adv)
 
     return l_tot, l_enc, l_con, l_adv
-
-"""
-# Loss 3: Adversarial loss (L2 distance)
-loss_adv = tf.compat.v1.reduce_sum(tf.square(dis_x - dis_x_hat), axis=(1))
-for fidx, _ in enumerate(features_real):
-    feat_dim = len(features_real[fidx].shape)
-    if(feat_dim == 4):
-        loss_adv += tf.compat.v1.reduce_sum(tf.square(features_real[fidx] - features_fake[fidx]), axis=(1, 2, 3))
-    elif(feat_dim == 3):
-        loss_adv += tf.compat.v1.reduce_sum(tf.square(features_real[fidx] - features_fake[fidx]), axis=(1, 2))
-    elif(feat_dim == 2):
-        loss_adv += tf.compat.v1.reduce_sum(tf.square(features_real[fidx] - features_fake[fidx]), axis=(1))
-    else:
-        loss_adv += tf.compat.v1.reduce_sum(tf.square(features_real[fidx] - features_fake[fidx]))
-
-mean_loss_enc = tf.compat.v1.reduce_mean(loss_enc)
-mean_loss_con = tf.compat.v1.reduce_mean(loss_con)
-mean_loss_adv = tf.compat.v1.reduce_mean(loss_adv)
-
-loss = tf.compat.v1.reduce_mean((w_enc * loss_enc) + (w_con * loss_con) + (w_adv * loss_adv))
-"""
